@@ -1,0 +1,10 @@
+log/*.log
+tmp/
+db/*.sql
+db/*.tgz
+config/local_env.yml
+config/database.yml
+config/secrets.yml
+public/barcodes/**/*.png
+public/deploy/*
+public/system/*

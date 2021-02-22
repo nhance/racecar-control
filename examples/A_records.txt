@@ -1,0 +1,36 @@
+$A,"00","00",5742873,"Owen","Kratz","",1
+$A,"13","13",4971292,"Gary","Gibson","",1
+$A,"14","14",2927397,"Wayne","Ducote","",1
+$A,"15","15",8911814,"","Adrian Fernandez","Acura",2
+$A,"15","15",8911814,"","Michel Jourdain","Acura",2
+$A,"15","15",8911814,"Fernandez / Diaz /","Jourdain","Acura",2
+$A,"17","17",600014,"Paul","Barnhart III","",1
+$A,"21","21",7072950,"Charlie","Shears","",1
+$A,"21","21",8852130,"","Dominik Farnbacher","Panoz Esperante",1
+$A,"21","21",8852130,"","Ian James","Panoz Esperante",1
+$A,"21","21",8852130,"Farnbacher /","James","Panoz Esperante",1
+$A,"22","22",3108030,"Sean","Wagner","",2
+$A,"24","24",8107273,"Jonathan","Gore","",1
+$A,"28","28",7347646,"Gigliotti / Drissi /","Ruhlman / Goossens","Riley Corvette  C6",1
+$A,"34","34",1354870,"Jon","Brownson","",1
+$A,"40","40",9367020,"","Andrea Robertson","Doran GT MK 7",1
+$A,"40","40",9367020,"","David Murry","Doran GT MK 7",1
+$A,"40","40",9367020,"","David Robertson","Doran GT MK 7",1
+$A,"40","40",9367020,"D. Robertson/ Murry/","A.Robertson","Doran GT MK 7",1
+$A,"42","42",4488639,"Richard","Fant","",1
+$A,"44","44",4201897,"van Overbeek /","Law/ Neiman","Porsche 911 GT3  RSR",1
+$A,"45","45",7729804,"Bergmeister/","Long","Porsche 911 GT3  RSR",1
+$A,"46","46",1946249,"TBA /","TBA","Porsche 911 GT3  RSR",1
+$A,"66","66",9320819,"","Gil de Ferran","Acura ARX 02a",3
+$A,"66","66",9320819,"de Ferran /","Pagenaud","Acura ARX 02a",3
+$A,"7","7",1369900,"Joel","Feinberg","",1
+$A,"77","77",6693576,"Johnny","Meriggi","",1
+$A,"79","79",3238511,"Lucas","Downs","",1
+$A,"8","8",7384589,"Anthony","Nicolosi","",1
+$A,"87","87",4667026,"Werner /","Henzler","Porsche 911 GT3  RSR",1
+$A,"88","88",1636262,"Dan","Weyland","",1
+$A,"9","9",8353891,"Jarrett","Boon","",1
+$A,"9","9",9096804,"","David Brabham","Acura ARX 02a",3
+$A,"9","9",9096804,"Brabham /","Sharp","Acura ARX 02a",3
+$A,"92","92",2118820,"","Bill Auberlen","",1
+$A,"92","92",2118820,"Auberlen / Hand /","Milner / Mueller","",1

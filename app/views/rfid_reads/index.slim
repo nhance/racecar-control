@@ -1,0 +1,55 @@
+h1 RFID Reads
+
+a.ui.massive.button(href="#{rfid_reads_path}") REFRESH
+
+= form_tag "/rfid_reads", method: :get, class: 'ui form' do
+  label Car Number
+  = text_field_tag :car_number, params[:car_number], class: 'ui input'
+  label Tag
+  = text_field_tag :tag, params[:tag], class: 'ui input'
+  label Position
+  = select_tag :position, options_for_select(['', 'IN', 'OUT'], selected: params[:position])
+  label
+    = check_box_tag :today, "today", params[:today]
+    Only for Today
+  = submit_tag "lookup", class: 'ui button'
+
+= paginate @rfid_reads
+= page_entries_info @rfid_reads
+
+- if @rfid_reads.count == 0
+  h2 No RFID reads yet
+- else
+  table.ui.celled.padded.table
+    thead
+      tr
+        th.single.line Reader
+        th Position
+        th Timestamp
+        th RSSI
+        th Ant#
+        th Tag
+        th Matched Car/Driver
+
+    tbody
+      - @rfid_reads.each do |rfid_read|
+        tr(class="rfid #{rfid_read.reader_role}")
+          td=rfid_read.reader.name
+          td=rfid_read.reader_role
+          td(title="#{rfid_read.first_seen_timestamp}")=rfid_read.first_seen_time.strftime("%F %-I:%M:%S%p")
+          td=rfid_read.peak_rssi
+          td=rfid_read.antenna_port
+          td(title="ID:#{rfid_read.id}")=rfid_read.epc
+          td
+            - if rfid_read.tag_type == Car
+              span(title="ID#{rfid_read.car.try(:id)}")
+                = rfid_read.car
+            - elsif rfid_read.tag_type == Driver
+              span(title="ID#{rfid_read.driver.try(:id)}")
+                = rfid_read.driver
+                - if rfid_read.driver and rfid_read.driver.currently_driving.present?
+                  = "(#{rfid_read.driver.currently_driving.map { |car| "##{car.number}" }.join(", ")})" if rfid_read.driver.present?
+            - if rfid_read.scan.present?
+              = link_to " (scan##{rfid_read.scan_id})", scan_path(rfid_read.scan)
+              - if rfid_read.scan.driver and rfid_read.scan.driver.unknown?
+                = semantic_icon 'warning'

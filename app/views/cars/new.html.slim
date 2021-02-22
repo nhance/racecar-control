@@ -1,0 +1,13 @@
+.ui.block.header
+  = semantic_icon('large circular invertered car')
+  .content
+    | Add a Car
+    .sub.header
+      | Register a new car with 
+      = @team
+
+.ui.segment.raised
+  = form_for @car, html: { class: 'ui form' } do |f|
+    = render "form_fields", f: f
+
+    = f.submit "Save car", class: 'ui submit primary button'

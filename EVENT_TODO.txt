@@ -1,0 +1,107 @@
+
+TO PACK:
+
+X transponders
+X transponder decoder
+X transponder charger
+X Orbits laptop
+X access point
+X 2 barcode scanners
+X 2 barcode scanners USB cables.
+X 2 cell phones
+X 2 cell phone USB cables.
+X 2 cell phone screen protectors
+X laptop (AER software)
+X printer
+X printer USB cable
+X printer power cable
+X printer cartridges
+- ??
+
+PRE-PRE EVENT:
+
+X Charge everything.
+X Copy/move development database.
+X Assign transponder numbers (or send to John)
+X Upload latest code to phones
+X Load MotorsportReg data into Orbits.
+  X Download
+X Load MotorsportReg data into AER DB.
+  X Download
+
+WHAT I WAS WORKING ON:
+X Tweaking Orbits data (adding team names)
+X Need to shorten some AER team names because Orbit doesn't support super long names
+- 1 or 2 barcodes missing a leading zero.
+- Orbits exporter from AER server
+X Team/car barcode generator
+- Qualifying diff times
+X get stuff on GitHub!!!
+- create development and production environment.
+- may need more indexes.
+  - look at logs.  not sure if scans or laptimes will slow down.
+  - saw some weird SQL for looking up cars.
+
+X Create RaceMonitor Events for weekend.
+  X Practice
+  X Qualifying
+  X Race1
+  X Race2
+
+X sync all data
+X Have someone verify data?
+
+AT LOCATION:
+
+- Get static IP address range.
+- Set IP address of Orbits laptop.
+- Set IP address of AER laptop.
+- Point AER middleware to Orbits laptop IP address.
+- Setup access point.
+- Take cell phones out of airplane mode (or can i just turn on wifi & bluetooth)
+- Set IP addresses for AER cell phones (actually, cell phones can be DHCP).
+- Point AER cell phones to AER laptop IP address.
+- Test cell phone connection.
+- Orbits qualifying
+- Orbits race1
+- Orbits race2
+
+LESSONS LEARNED:
+
+- Make sure the AER laptop doesn't SLEEP!!!
+  - Battery & Power Adapter.
+- Make sure all power adapters are plugged in.
+- Make sure registration can talk to AER laptop.
+- Make sure PIT can talk to AER laptop.
+
+- Communication to the track about WiFi setup.
+  - WGI took us too literal.
+  - We should diagram this.
+  - 2 laptops in the tower
+    - 1 running Orbits
+    - 1 running AER software
+    - Orbits laptop needs to communicate to AER laptop.
+  - 1-2 laptops at registration
+    - laptop(s) need to talk to AER laptop.
+  - 1 cell phone using WiFi @ pit out.
+    - needs to talk to AER laptop.
+  - 1 cell phone using WiFi @ pit in (optional).
+    - needs to talk to AER laptop.
+
+- Need more than 1 person doing T&S setup.
+  - Orbits needs to be loaded and confirmed.
+    - Right now, adding team names is manual.
+    - Visual inspection vs AER DB vs MotorsportReg
+    - Lapping confirmation (car # matches when they cross the line)
+      - Also that transponder is working.
+    - Any team names that are truncated, need to be updated in:
+      - Motorsport Reg (future imports)
+      - AER software.
+      - Writing our own Orbits export tool from the AER software will help this.
+  - Need to make sure Motorsports Reg data matches reality.
+    - Car & transponder numbers.
+    - Update when necessary so it's easy to re-import data.
+  - Need to confirm Race Monitor
+  - WiFi confirmation/setup.
+    - While the track is responsible for this it can either go very, very 
+      smoothly or very, very badly.  With WGI, it went really, really badly.

@@ -1,0 +1,23 @@
+.ui.block.header
+  = semantic_icon('large circular invertered users')
+  .content
+    | Add a new team
+    .sub.header Register a new team with AER, we're glad you're here.
+
+= form_for @team, url: team_path, method: :post do |f|
+  .ui.labeled.input
+    .ui.label = f.label :name
+    = f.text_field :name
+    .ui.corner.label = semantic_icon 'asterisk'
+  .ui.hidden.divider
+  .ui.labeled.input
+    .ui.label = f.label :passcode
+    = f.text_field :passcode
+    .ui.corner.label = semantic_icon 'asterisk'
+  #passcode_info.ui.info.message
+    .header What is a passcode?
+    | A passcode is a shared password you will give to your team
+    | members so they can join your team.
+  .ui.hidden.divider
+  = f.submit "Save and join team", class: 'ui primary button'
+

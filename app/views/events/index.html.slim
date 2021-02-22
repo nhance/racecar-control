@@ -1,0 +1,54 @@
+h1.ui.block.header
+  = semantic_icon('large circular invertered calendar')
+  .content
+    | Event list
+    .sub.header
+      | All events for #{@year}
+
+.ui.horizontal.list
+  - @seasons.each do |season|
+    a.ui.button.basic(href="#{events_path(year: season.year)}" class="#{"active" if @year == season.year.to_s}")
+      | #{season.year}
+
+.ui.relaxed.divided.list
+  - @events.each do |event|
+    .item
+      .right.floated.compact.ui
+        - if event.races.count > 0
+          .ui.dropdown
+            .ui.large.labeled.icon.green.button
+              .text Results
+              = semantic_icon 'dropdown'
+            .menu
+              .item =link_to "Overall Results", event_results_path(event)
+              .item =link_to "Pit Stops", event_stops_path(event)
+              - if event.laptimes_csv_file_exists?
+                .item =link_to "Download Lap times (CSV)", event_laptimes_path(event, format: :csv)
+        = link_to "View Team List", event_teams_path(event), class: 'ui small basic button'
+        - if event.reservable_items.count > 0
+          = link_to "Reservations", event_reservables_path(event), class: 'ui small basic button'
+        - if current_user.present?
+          .ui.dropdown
+            .ui.red.inverted.button
+              | Admin
+              = semantic_icon 'dropdown'
+            .menu
+              .item =link_to "Registered Drivers List", event_driver_registrations_path(event)
+              .item =link_to "Registered Drivers List (CSV)", event_driver_registrations_path(event, format: 'csv')
+      .content
+        =semantic_icon 'circular calendar'
+        .header = event.track
+        .meta #{event.start_date.to_s(:long)} to #{event.stop_date.to_s(:long)}
+        .ui.tiny.horizontal.divided.list
+          - previous_race = nil
+          -event.races.each do |race|
+            - unless race.qualifying?
+              .item
+                .header=race.name
+                .ui.tiny.bulleted.list
+                  - if previous_race.present?
+                    = link_to "Grid Sheet", grid_race_results_path(previous_race), class: 'item'
+                  - unless race.qualifying?
+                    = link_to "Results", race_results_path(race), class: 'item'
+            - previous_race = race
+  = link_to "Season Standings", season_results_path(@year), class: 'ui large blue button'

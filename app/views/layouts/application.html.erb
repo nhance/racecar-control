@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= @title || "AER" %></title>
+  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+  <%- facebook_og.each_pair do |key, value| %>
+    <meta property="og:<%= key %>" content="<%= value.gsub('"', "'") %>" />
+  <% end %>
+</head>
+<body>
+  <div class='ui page grid'>
+    <nav class="ui large secondary menu">
+      <div class="item">
+        <a href="/team" class="ui medium image"><%= image_tag "aer.png" %></a>
+      </div>
+      <div class="right menu">
+        <% if current_user.present? %>
+          <div class="red ui pointing dropdown button">
+            <span class="text">Admin</span>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <a class="item" href="/admin">Rails Admin</a>
+              <div class="divider"></div>
+              <a class="item" href="<%= new_sms_message_path %>">
+                <%= semantic_icon 'send' %>
+                SMS Messaging
+              </a>
+              <div class="divider"></div>
+              <a class="item" href="<%= events_path %>">Event admin</a>
+              <a class="item" href="<%= rfid_reads_path %>">RFID reads</a>
+              <a class="item" href="/orbits/export">Orbits Export</a>
+              <% if Race.current.present? %>
+                <a class="item" href="/races/current/unknown_drivers">Unknown Driver List</a>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <% if Event.current.present? %>
+          <a class="ui item inverted green button" href="<%= live_path %>">
+            <%= semantic_icon('wait') %>
+            LIVE!
+          </a>
+        <% end %>
+        <a class="item" href="<%= events_path %>">
+          <%= semantic_icon('calendar') %>
+          Events
+        </a>
+        <% if current_driver.present? %>
+          <a class="item" href="<%= team_path %>">
+            <%= semantic_icon('users') %>
+            My Team
+          </a>
+          <a class="item" href="<%= teams_path %>">
+            <%= semantic_icon 'random' %>
+            View all teams
+          </a>
+          <div class="ui pointing dropdown link item" tabindex="-1">
+            <i class="dropdown icon" tabindex="0"></i>
+            <span class="text">My Account</span>
+            <div class="menu" tabindex="-1">
+              <a class="item" href="<%= edit_driver_registration_path %>">
+                <%= semantic_icon 'edit' %>
+                Edit Driver Account
+              </a>
+              <div class="divider"></div>
+              <%= link_to "Log out", destroy_driver_session_path, method: :delete, class: 'item' %>
+            </div>
+          </div>
+        <% else %>
+          <div class="item">
+            <a href="<%= new_driver_session_path %>" class="ui huge basic button">
+              Login
+            </a>
+          </div>
+          <div class="item">
+            <a href="<%= new_driver_registration_path %>" class="ui blue huge labeled icon button">
+              <%= semantic_icon('add user') %>
+              Sign Up
+            </a>
+          </div>
+        <% end %>
+      </div>
+    </nav>
+    <div class="row">
+      <main class="column" id="content">
+        <%= semantic_flash %>
+        <%= yield %>
+        <div class="ui divider hidden"></div>
+        <div class="ui segments">
+          <div class="ui basic segment center aligned">
+            Please email
+            <%= mail_to "registration@americanenduranceracing.com" %>
+            if you need help
+          </div>
+          <div class="ui secondary segment center aligned">
+            Website designed, developed, hosted, and maintained by <a href="http://www.reenhanced.com/">Reenhanced</a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-50038619-3', 'auto');
+    ga('send', 'pageview');
+
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '1651054625174353',
+        xfbml      : true,
+        version    : 'v2.5'
+      });
+    };
+
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "//connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+  </script>
+  <%= yield(:javascript) %>
+</body>
+</html>

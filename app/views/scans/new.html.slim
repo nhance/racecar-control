@@ -1,0 +1,22 @@
+.ui.segment
+  h1.ui.header Create Scan for #{@registration.team}
+  = form_for Scan.new(registration_id: @registration.id, pit: 'OUT'), html: { class: 'ui form' } do |f|
+    = f.hidden_field :registration_id
+    .field
+      = f.label :pit
+      = f.select :pit, Scan::PITS, {}, class: 'ui dropdown'
+    .field
+      = f.label :driver
+      = f.select :driver_id, ([Driver.unknown] + @registration.team.drivers).collect { |d| [d.full_name, d.id] }, {}, class: 'ui dropdown'
+    .field
+      = f.label :short_stop
+      = f.check_box :short_stop, class: 'ui checkbox'
+    h5.ui.dividing.header Pit Stop At
+    .fields
+      = f.datetime_select :stop_at, { include_seconds: true }, class: 'ui mini dropdown'
+    = submit_tag "Create".html_safe, class: 'ui green button'
+  .ui.info.message
+    .header Manual Scan Creation
+    | Create scans manually to add a pit in or pit-out a time of your choice.
+    | This is to be used only when the RFID reader isn't working, or if you
+    | need to manually track pit stops.

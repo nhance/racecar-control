@@ -1,0 +1,31 @@
+- if @drivers.present?
+  h1 Drivers
+  table.ui.celled.padded.table
+    thead
+      tr
+        th.single.line Driver Name
+        th Email
+        th Experience
+        th Admin Notes
+        th Signup at
+    tbody
+      - @drivers.each do |driver|
+        tr
+          td
+            h2.ui.header= driver.full_name
+          td
+            = mail_to driver.email, driver.email
+          td
+            .ui.list
+              - driver.experience.each_pair do |key, value|
+                .item
+                  .header=key
+                  .description=value
+            p= driver.notes
+          td
+            p= driver.admin_notes
+          td
+            = driver.created_at.to_s(:default)
+  = paginate @drivers
+- else
+  h1.ui.header AER DRIVERS ARE THE BEST IN THE WORLD!

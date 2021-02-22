@@ -1,0 +1,66 @@
+h1.ui.block.header
+  - if @car.team.rally_baby?
+    = semantic_icon('large red circular invertered loading car')
+  - else
+    = semantic_icon('large circular invertered car')
+  .content
+    = @car.team.name
+    .sub.header
+      = "##{@car.number} #{@car.car_type}"
+
+h2.ui.dividing.header Events
+- @events.each do |event|
+  .ui.raised.segment
+    .content
+      .right.floated.compact.ui.basic.segment
+        - if registration = @car.registration_for(event)
+          - if registration.paid_in_full?
+            = link_to "Manage Registration", registration_path(registration), class: 'ui green button'
+          - else
+            = link_to "Payment Due: #{number_to_currency(registration.amount_due_dollars)}", registration_path(registration), class: 'ui button red'
+        - else
+          = form_tag registrations_path, id: "register_for_event_#{event.id}" do
+            = hidden_field_tag 'registration[event_id]', event.id
+            = hidden_field_tag 'registration[car_id]', @car.id
+            = submit_tag "Register to race (#{number_to_currency(event.price_in_cents / 100.0)})", class: 'ui blue button'
+      h2.ui.header
+        = semantic_icon 'road'
+        .content
+          = event.track
+      .meta #{event.start_date.to_s(:long)} to #{event.stop_date.to_s(:long)}
+      - if registration
+        .ui.segment
+          h5.ui.header Registered Drivers (<a href="#{registration_drivers_path(registration)}">manage</a>)
+          - if registration.driver_registrations.count == 0
+            | No drivers yet
+          - else
+            .ui.relaxed.horizontal.list(style="list-style-type: none;")
+              - registration.driver_registrations.each do |driver_registration|
+                .item
+                  - if @car.team.rally_baby?
+                    = semantic_icon 'cocktail'
+                  - else
+                    = semantic_icon 'user'
+                  .content
+                    .header #{driver_registration.driver.full_name }
+                    .meta Driver
+                    .description
+                      = pluralize(driver_registration.driver.lifetime_lap_count, "lifetime lap")
+
+
+
+.ui.divider
+
+- if @car.registrations.count == 0
+  = link_to car_path(@car), method: :delete, class: 'ui labeled right floated icon button red' do
+    = semantic_icon 'close'
+    | Remove Car
+
+= link_to edit_car_path(@car), class: 'ui labeled right floated icon button' do
+  = semantic_icon 'edit'
+  | Edit Car
+
+a.ui.labeled.icon.button href="#{team_path}"
+  = semantic_icon 'left arrow'
+  | Back
+

@@ -1,0 +1,46 @@
+#scan_list {
+
+  th {
+    background-color: #f8f8f8;
+    max-width: 3em;
+    border-bottom: 1px solid #ccc;
+
+    .car_number {
+      font-size: 2em;
+    }
+
+    .team_name {
+      font-size: 1em;
+    }
+  }
+
+  tr.myteam {
+    background-color: #f8f8f8;
+    font-size: 1.2em;
+
+    th {
+      color: #202585;
+      background-color: #e0e0e0;
+    }
+  }
+
+  td {
+    max-width: 80px;
+
+    .ui.card {
+      margin: 0;
+    }
+
+    .out_time {
+      margin-bottom: 1em;
+    }
+
+    a {
+      color: #009fda !important;
+    }
+  }
+
+  .short_stop {
+    color: red !important;
+  }
+}

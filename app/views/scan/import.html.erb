@@ -1,0 +1,18 @@
+<h1>Scan Import</h1>
+
+<%# if data.present? %>
+  <%# data.insepct %>
+<%# end %>
+<%= form_tag({action: :import}, multipart: true) do %>
+   <p>
+     <%= file_field_tag "filename" %>
+   </p>
+   <p>
+     <%= submit_tag 'Submit' %>
+     <%# button_tag 'Test' %>
+     <%= button_tag "Reset", type: :reset %>
+  </p>
+  <p>
+     <%= link_to 'Back', '/' %>
+  </p>
+<% end %>

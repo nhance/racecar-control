@@ -1,0 +1,16 @@
+h1.ui.header.block
+  .content Unknown drivers for #{@race.name_with_event}
+
+.ui.relaxed.divided.list
+  - @unknown_driver_scans.each do |scan|
+    .item
+      .right.floated.compact.ui
+        = scan.team
+      .content
+        a.ui.left.floated.black.large.button(href=scan_path(scan) style="color: white !important")
+          = scan.stop_at.utc.in_time_zone(scan.event.time_zone)
+        .ui.horizontal.statistic
+          .value
+            = "##{scan.car_number}"
+          .label
+            = scan.car.car_type

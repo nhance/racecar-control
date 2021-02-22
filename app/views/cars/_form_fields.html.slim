@@ -1,0 +1,27 @@
+- if f.object.errors.any?
+  .ui.message
+    .header Something went wrong:
+    ul.list
+      - f.object.errors.full_messages.each do |msg|
+        li= msg
+
+.field
+  .ui.labeled.input
+    .ui.label Car Number
+    = f.text_field :number, data: { validate: 'required' }
+    .ui.corner.label = semantic_icon 'asterisk'
+  .ui.hidden.divider
+
+- { color: 'Enter color', year: 'Enter year of car', make: 'Enter make', model: 'Enter model' }.each do |input, placeholder|
+  .field
+    .ui.labeled.input
+      .ui.label = f.label input
+      = f.text_field input, placeholder: placeholder, data: { validate: 'required' }
+      .ui.corner.label = semantic_icon 'asterisk'
+  .ui.hidden.divider
+
+.field
+  .ui.labeled.input
+    .ui.label = f.label :transponder_number
+    = f.text_field :transponder_number, placeholder: "Enter Transponder # (optional)"
+.ui.hidden.divider

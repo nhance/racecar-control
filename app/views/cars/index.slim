@@ -1,0 +1,18 @@
+table.ui.striped.very.compact.small.table
+  thead
+    th
+    th Car
+    th Team
+    th ?
+  tbody
+    - @registrations.each do |registration|
+      tr
+        td.collapsing
+          input.ui.checkbox(type='checkbox')
+        td.collapsing
+          = registration.car_number
+        td
+          = registration.team
+        td
+          input.ui.input(size="100")
+

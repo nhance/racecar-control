@@ -1,0 +1,84 @@
+h1.ui.block.header
+  = semantic_icon('large circular invertered calendar')
+  .content
+    = "LIVE: #{@event.track} #{@race.name}"
+    .sub.header
+      | #{@registrations.count} participants for #{@race.start_time.to_date.to_s(:long)}
+
+- if @event.promo_content.present?
+  #promo_content
+    = markdown @event.promo_content
+
+a#refresh_button.ui.primary.huge.button(href='/live' style="position: fixed; bottom: 10px; right: 20px;") Refresh
+table#scan_list.ui.celled.fixed.table
+  thead
+    tr
+      th Car #
+      th(title="The Cody Ace Counting-Is-Easy Column") # Pits
+      - @race.hour_timestamps.each do |timestamp|
+        - time = Time.at(timestamp)
+        - hour = time.in_time_zone(@event.time_zone).hour
+        th
+          - if hour.to_i < 12
+            = "#{hour}AM"
+          - elsif hour.to_i == 12
+            | 12PM
+          - else
+            = "#{hour - 12}PM"
+  tbody#context
+    - @registrations.each do |registration|
+      tr(class="#{"myteam" if current_driver && current_driver.team == registration.team}")
+        th
+          .car_number data-modal="registration_modal_#{registration.id}"
+            ="##{registration.car_number}"
+          .team_name = "#{registration.team}"
+          - if current_user.present?
+            a.add_scan href="#{new_registration_scan_path(registration)}"
+              = semantic_icon('add to calendar')
+          - if current_user.present?
+            = render 'registration_modal', registration: registration
+        th
+          .num_stops
+            = pluralize(registration.scans.out.not_short_stop.for_current_race.count, 'Stop')
+          - if current_user.present? && registration.violations.count > 0
+            .violations.admin
+              =pluralize(registration.violations.count, "Fuckup")
+        - scans = registration.scans.out.for_current_race.to_a
+        - @race.hour_timestamps.each do |timestamp|
+          - next_hour = timestamp + 3600
+          - time = Time.at(timestamp)
+          - hour = time.in_time_zone(@event.time_zone).hour
+          td
+            - this_hour_scans = scans.select { |scan| scan.stop_at.to_i < next_hour }
+            - scans.delete_if { |scan| scan.stop_at.to_i < next_hour }
+            - this_hour_scans.each do |scan|
+              - if in_scan = scan.in_scan
+                .ui.pointing.below.mini.label.in_time = in_scan.stop_time
+              a.ui.card href="#{scan_path(scan)}"
+                .content
+                  - if scan.short_stop?
+                    .header.short_stop = scan.driver_name
+                  - else
+                    .header = scan.driver_name
+                  - if scan.has_pit_time?
+                    .meta
+                      = human_time(scan.pit_time)
+              .ui.pointing.mini.label.out_time = scan.stop_time
+  thead
+    tr
+      th Car #
+      th # Pits
+      - @race.hour_timestamps.each do |timestamp|
+        - time = Time.at(timestamp)
+        - hour = time.in_time_zone(@event.time_zone).hour
+        th
+          - if hour.to_i < 12
+            = "#{hour}AM"
+          - elsif hour.to_i == 12
+            | 12PM
+          - else
+            = "#{hour - 12}PM"
+
+.short_stop
+  | Stops in red are short stops and do not count against the minimum pit count.
+

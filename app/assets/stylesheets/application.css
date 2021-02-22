@@ -1,0 +1,47 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require jquery-ui/datepicker
+ *= require semantic-ui
+ *= require_self
+ *= require_tree .
+ */
+
+.admin { color: #f00 !important; }
+
+.rfid.IN { 
+  background-color: #dedede;
+}
+
+.rotate90 {
+    -ms-transform: rotate(90deg); /* IE 9 */
+    -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+    transform: rotate(90deg);
+}
+.rotate270 { 
+    -webkit-transform: rotate(270deg); /* Chrome, Safari, Opera */
+    transform:rotate(270deg);
+}
+
+.toptobottom{
+  width: 0;
+  word-wrap: break-word;
+}
+
+table.results .unqualified td {
+  font-style: italic;
+  color: #888;
+}
+
+body {
+  background: #fff;
+  margin: 50px 0;
+}
+

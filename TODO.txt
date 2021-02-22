@@ -1,0 +1,158 @@
+2015:
+  - Switch to postgresql (heroku hosted?)
+  - Driver registration
+  - Car registration
+  - Event registration
+  - Remove Teams
+  - Remove Violation
+
+- AERMiddleWare
+  X Re-write now that we have a Rails project for the rest of the stuff.
+  X grab lap number ($G, field index 3).
+  X Create our own 'reset' that resends all $A & $COMP records.
+    X But should also be able to handle Orbits cause I believe it can resend 
+      any laps times that have been edited or added?
+  X Whenever a driver is changed, save the last A_RECORD & C_RECORD.
+    X I only save when the original values.
+  - Call it server.resend?
+    - Just sets a flag
+    X Whenever a new lap comes across for each car, also send A & COMP records.
+    X Also have an option to pass in car number?
+      X So we'd need to save A & C records by car number.
+      X This will only resend A & COMP records for 1 car.
+  - I think we should log all incoming and outgoing messages.
+    - better diagnostics.
+  - WebUI wrapper for 
+    - configuring
+    - starting
+    - stopping
+    - resending
+    - displaying incoming/outgoing messages
+    - status/heartbeat?
+      - running/not running...
+
+- MotorsportReg import tool
+  - reset/delete all existing?
+  - nicer output of import stats.
+  - possibly list changes or link to:
+    - /admin/driver#history
+    - /admin/car#history
+    - /admin/team#history
+  - look into RailsAdminImport gem
+    - would have to re-write
+    - would like to restrict it to certain pages.
+
+- look through logs and possibly add indexes.
+
+- Admin Console
+  - setup Devise
+  - setup CanCan
+
+- go through and see where we can add laptimes.
+  - teams
+  - scans
+
+- Pit IN import tool.
+  - need stop_at on scans
+  - can calculate stint lengths
+  - can calculate pit stop lengths
+
+- Some barcode printer import...
+  X generate individual barcodes
+  ~ bulk barcodes
+    ~ might not be worth it because then we'd have to look through 100 of them.
+  - Gotta discuss barcodes.
+
+- LapTimes
+  - graphs
+  - lap number
+  - filter by run group, car number, team, driver
+  X need to add track length to event.
+  X speed = distance / time
+  X position
+  X qualifying vs other
+
+X Move rails_admin configs to models.
+
+- Make violation_count and scan_count an offical column for Driver/Team?
+  - it will make them sortable
+  - easy to see who has most violations and most stints
+  - belongs_to :owner, :polymorphic => true, :counter_cache => true
+
+X Sum violations & scans on Team.
+  X easy to see which team has the most violations/stints
+  - might like those as sortable...
+
+X Violations
+  X make violations associated to Scan
+  - need easier access from the Scans section.
+  X association to Event through Scan
+
+X Scans
+  - add auto-refresh
+  - Flag as practice, qualifying, race1, race2?
+  - scopes by day & by session
+  - add session: practice vs qualifying vs race1 & race2
+  X Need stop_at (for when we do Scan at Pit IN).
+  X Rename created_at to start_at
+
+- Teams page
+  - display fastest qualifying lap.
+  - display fastest race lap.
+  - display each driver & their fastest time.
+  - display median lap time.
+  - display median lap time for group(?)
+  - display standard deviation for group(?)
+  - stats by track status too?
+  - graph
+  - filter by run group.
+
+- Driver's page
+  - display fastest qualifying lap.
+  - display fastest race lap.
+  - display median lap time.
+  - display standard deviation
+  - stats by track status too?
+
+- Event association
+  - has_many_through for Driver, Team, Car?
+  - figure out how to support multiple events.
+    - that will make loading new data harder.
+      - driver IDs should stay the same
+      - car transponders can change @ each event (see rentals)
+      - team names can change @ each evnet.
+    - my just have a new database per event?
+
+- figure out qualifying interface
+  - look for NJMP example
+  X output HTML
+  X output CSV
+  - need to calculate diffs.
+  - need to graph
+
+- Cell phones
+  - Setting pit IN/OUT is lower case.  Need to either uppercase or make them
+    case insensitive.
+  - Network confirmation tool broke w/ the IP lookup.  So it was giving us a
+    false negative.
+  X Should have a setting for Practice, Qualifying, Race1, Race2.
+
+X Eclipse running under AER account.
+
+X On AERScan App, larger text for car # & driver.
+
+- better scanners
+  - check scanner volume
+  - look for new scanners
+  - confirm that you get a scan through phone
+    - visual
+    - audio 
+  - lockout
+
+- phone vibrate when you get valid scans.
+
+- stronger omni-directional antenna for AP.
+
+- qualifying
+  - median
+  - graphs

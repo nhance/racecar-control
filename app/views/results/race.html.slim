@@ -1,0 +1,42 @@
+h1.ui.block.header
+  = semantic_icon('large circular invertered checkered flag')
+  .content
+    = "Results for #{@race.event.track} #{@race.name}"
+    .sub.header
+      | #{@race.car_classes.count} classes for #{@race.start_time.to_date.to_s(:long)}
+
+- if @race.results.count == 0 && current_user.present?
+  = link_to "Preview", preview_race_results_path(@race), class: 'ui button primary'
+
+- @index = 0
+- @race.car_classes.each do |car_class|
+  .ui.segment
+    h2.ui.block.header= "Car Class: #{car_class}"
+    table.ui.celled.table.results
+      thead
+        tr
+          -if current_user.present?
+            th Grid
+          th Car #
+          - unless @race.qualifying?
+            th Finish
+            th Points
+      tbody
+        - @race.results.sorted.where(car_class: car_class).each do |result|
+          tr(id="result_#{result.id}" class=(result.points_with_adjustments < 1 ? "unqualified" : ""))
+            -if current_user.present?
+              td= @index += 1
+            td= "##{result.registration.car_number} #{result.team}"
+            - unless @race.qualifying?
+              td= result.position
+              td(style="position: relative")
+                - if result.adjustment_points != 0
+                  .ui.blue.right.corner.label
+                    i.info.icon.adjustment(data-content=result.adjustment_reasons data-variation="inverted")
+                = result.points_with_adjustments
+
+- content_for(:javascript) do
+  javascript:
+    $(function() {
+      $('.adjustment').popup();
+    });

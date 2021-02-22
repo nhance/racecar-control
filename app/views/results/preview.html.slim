@@ -1,0 +1,38 @@
+h1.ui.block.header.red
+  = semantic_icon('large circular invertered red checkered flag')
+  .content
+    = "[PREVIEW] Results for #{@race.event.track} #{@race.name}"
+
+.ui.segment
+  = form_tag preview_race_results_path(@race) do
+    =submit_tag "Save", class: 'ui button primary' if @can_generate
+    table.ui.celled.table
+      thead
+        tr
+          th Finish
+          th Car #
+          th Car Class
+          th Laps
+          th Last Lap
+      tbody
+        - @index = 0
+        - @results.each do |result|
+          - lap_time = result.lap_time
+          tr(id="result_#{result.id}")
+            td= @index += 1
+            td= "##{result.registration.car_number} #{result.team}"
+            td= result.car_class
+            td=text_field_tag "lap_times[#{lap_time.id}][lap_number]", lap_time.lap_number, size: 4
+            td
+              =datetime_local_field_tag "lap_times[#{lap_time.id}][created_at]", lap_time.created_at.try(:strftime, '%Y-%m-%dT%H:%M:%S'), { step: "1" }
+
+- if @can_generate
+  .ui.segment
+    = link_to "GENERATE RESULTS - PRESS ONE TIME AND WAIT", generate_race_results_path(@race), method: :post, class: 'ui button large red'
+
+
+- content_for(:javascript) do
+  javascript:
+    $(function() {
+      $('.adjustment').popup();
+    });

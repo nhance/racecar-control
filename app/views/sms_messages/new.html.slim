@@ -1,0 +1,104 @@
+h1.ui.header SMS Messages
+.right.floated.content
+  = link_to "Clear pending", clear_pending_sms_messages_path, class: 'ui button', method: :post
+.ui.segment
+  .ui.relaxed.divided.list(style="height: 300px; overflow-y: scroll")
+    - @messages.each do |message|
+      .item
+        .right.floated.content
+          - if message.sent_at.nil?
+            em
+              = link_to "pending", resend_sms_message_path(message), method: :post
+            = " "
+            = link_to "[x]", sms_message_path(message), method: :delete
+          - else
+            =message.sent_at.in_time_zone("America/New_York")
+        .content
+          .header=message.recipient
+          =message.message
+
+.ui.segment
+  - if @event
+    h2.ui.header
+      .content= @event.name
+      .sub.header= "#{@event.start_date.to_s(:long)} to #{@event.stop_date.to_s(:long)}"
+
+    p The event above is used to fill teams and drivers below
+
+  .ui.inverted.segment
+    = form_for @sms_message, html: { class: 'ui inverted form'} do |f|
+      #resource_type.inline.fields
+        label.ui.label(for="resource_type") Deliver to
+        - if @event
+          .field
+            .ui.radio.checkbox
+              = f.radio_button :resource_type, 'Event'
+              label #{@event.name}
+
+          .field
+            .ui.radio.checkbox
+              = f.radio_button :resource_type, 'Registration'
+              label Registration/Team
+
+          .field
+            .ui.radio.checkbox
+              = f.radio_button :resource_type, 'DriverRegistration'
+              label Registered Driver
+
+        .field
+          .ui.radio.checkbox
+            = f.radio_button :resource_type, 'Driver'
+            label Driver
+
+      #recipient_search.field(style="display: hidden")
+        label Recipient
+        .ui.fluid.search.selection.dropdown.manual
+          = f.hidden_field :resource_id
+          = semantic_icon 'dropdown'
+          .default.text Select Recipient...
+          #recipients.menu
+
+      .field
+        label.ui.required Message
+        = f.text_field :message, class: 'ui large input'
+
+      = submit_tag 'Send', class: 'ui blue button'
+
+javascript:
+  ContactList = { Driver: #{{@drivers.to_json}}, Event: [#{{@events.to_json}}], Registration: #{{@registrations.to_json}}, DriverRegistration: #{{@registered_drivers.to_json}} }
+
+  $('#recipient_search .dropdown').dropdown({
+    action: 'activate',
+    onChange: function(value) {
+    console.log(value);
+      var $resourceId = $('#sms_message_resource_id');
+
+      $resourceId.val(value);
+    }
+  });
+
+  $('#resource_type .checkbox').checkbox({
+    onChecked: function() {
+      var resource_type = $(this).val();
+      var recipients    = $('#recipients');
+      var dropdown      = $('#recipient_search .dropdown');
+
+      recipients.html('');
+      dropdown.dropdown('clear');
+
+      $.each(ContactList[resource_type], function(i, item) {
+        var opt = $('<div class="item">');
+        opt.attr('data-value', item.id);
+        opt.text(item.name);
+
+        recipients.append(opt);
+      });
+
+      $('#recipient_search').show();
+
+      if (ContactList[resource_type].length == 1) {
+        dropdown.dropdown('refresh');
+        dropdown.dropdown('set selected', ContactList[resource_type][0].id);
+      }
+    }
+  });

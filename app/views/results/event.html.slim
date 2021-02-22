@@ -1,0 +1,21 @@
+h1.ui.block.header
+  = semantic_icon('large circular invertered checkered flag')
+  .content
+    = "Overall Results for #{@event}"
+
+- @event.pretty_overall_winners.each_pair do |car_class, result_summary|
+  - @rank = 0
+  .ui.segment
+    h2.ui.block.header= "Car Class: #{car_class}"
+    table.ui.celled.table
+      thead
+        tr
+          th Rank
+          th Team
+          th Points
+      tbody
+        - result_summary.each do |result_hash|
+          tr
+            td= @rank += 1
+            td= result_hash[:car]
+            td= result_hash[:total]

@@ -1,0 +1,62 @@
+h1.ui.block.header
+  = semantic_icon('large circular invertered calendar')
+  .content
+    = "Pit Outs for #{@event.track}"
+    .sub.header
+      | #{@registrations.count} registrations
+
+-@event.races.each do |race|
+  h2.ui.block.header
+    = semantic_icon('large circular invertered calendar')
+    .content
+      = "#{race.name}"
+      .sub.header
+        | #{@registrations.count} registrations for #{race.start_time.to_date.to_s(:long)}
+
+  table#scan_list.ui.celled.table
+    thead
+      tr
+        th Car #
+        - race.hour_timestamps.each do |timestamp|
+          - time = Time.at(timestamp)
+          - hour = time.in_time_zone(@event.time_zone).hour
+          th
+            - if hour.to_i < 12
+              = "#{hour}AM"
+            - elsif hour.to_i == 12
+              | 12PM
+            - else
+              = "#{hour - 12}PM"
+    tbody
+      - @registrations.each do |registration|
+        tr(class="#{"myteam" if current_driver && current_driver.team == registration.team}")
+          th
+            .car_number ="##{registration.car_number}"
+            .team_name = "#{registration.team}"
+
+            - scans = registration.scans.out.for_race(race).to_a
+            - race.hour_timestamps.each do |timestamp|
+              - next_hour = timestamp + 3600
+              - time = Time.at(timestamp)
+              - hour = time.in_time_zone(@event.time_zone).hour
+              td
+                ul.ui.list
+                  - this_hour_scans = scans.select { |scan| scan.created_at.to_i < next_hour }
+                  - scans.delete_if { |scan| scan.created_at.to_i < next_hour }
+                  - this_hour_scans.each do |scan|
+                    - if scan.short_stop?
+                      li.item.short_stop
+                        .driver = link_to scan.driver_name, scan
+                        .time = scan.formatted_time
+                    - else
+                      li.item
+                        .driver = link_to scan.driver_name, scan
+                        .time = scan.formatted_time
+
+  a.ui.labeled.icon.button href="#{events_path}"
+    = semantic_icon 'left arrow'
+    | Back
+
+.short_stop
+  | Stops in red are short stops and do not count against the minimum pit count.
+

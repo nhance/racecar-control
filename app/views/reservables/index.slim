@@ -1,0 +1,21 @@
+h1.ui.block.header
+  = semantic_icon('large circular invertered calendar')
+  .content
+    = "Reservable Items for #{@event.track}"
+
+-if @registration.present?
+  h2.ui.header Click below to reserve:
+-else
+  h2.ui.header Click below to view reservations:
+.ui.relaxed.divided.list
+  -@reservable_items.each do |reservable_item|
+    .item
+      .right.floated.compact.ui
+      .content
+        .header
+          a.ui.large.green.button(href="#{@show_item.call(reservable_item)}")= reservable_item.name
+
+- if @registration.present?
+  a.ui.labeled.icon.button href="#{registration_path(@registration)}"
+    = semantic_icon 'left arrow'
+    | Back

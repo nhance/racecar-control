@@ -1,0 +1,17 @@
+== How to run a race
+
+* Setup race on race-monitor.com
+
+* Ensure all data is in database. We need drivers, teams, cars and registrations.
+
+* Every registration for the event should show a transponder number
+
+* Export the data to orbits using:  /orbits/export.csv
+
+* fire up a console and do this: `AerOrbitsConsumer.start`
+
+== How to test race data
+
+Testing race data using recorded race-monitor data from a previous event.
+
+`bin/orbits_simulator_server.rb <line_number>` will serve data from WGI day 2 last year.

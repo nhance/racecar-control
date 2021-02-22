@@ -1,0 +1,65 @@
+h1.ui.top.attached.block.header
+  = semantic_icon 'dashboard'
+  .content
+    = @team
+    .sub.header
+      = pluralize(@team.drivers.count, 'member')
+      - if @cars.count > 1
+        |  and #{pluralize(@cars.count, 'car')}
+
+.ui.bottom.attached.segment
+  .ui.two.cards
+    .card style="background-color: #D2F7FF"
+      .content
+        .header
+          = semantic_icon 'info circle'
+          | Passcode
+        .description
+          | Your team passcode is:
+          pre = @team.passcode
+          | Give this to other team members to join your team
+
+    .card style="background-color: #ffface;"
+      .content
+        .header
+          = semantic_icon 'question circle'
+          | How to register
+        .description
+          - if @cars.count > 0
+            |  Click the 'Registration' button to access registration
+          - else
+            | Use the 'Add Car' button below to add your car
+
+      - if @next_event.present? and @next_event.upcoming?
+        .extra.content
+          = semantic_icon 'calendar'
+          = "Reminder: Our next event at #{@next_event.track} is in #{distance_of_time_in_words(Date.today, @next_event.start_date)}"
+
+  #cars.ui.segment
+    .ui.header My Cars
+    .ui.divided.items
+      - @cars.each do |car|
+        .item
+          .content
+            .header = "##{car.number} #{car.car_type}"
+            .meta = car.color
+          a.ui.right.floated.button.primary href="#{car_path(car)}"
+            | Registration
+
+
+    .ui.divider
+    .ui.center.aligned.basic.segment
+      = link_to "#{semantic_icon('add circle')} Add car".html_safe, new_car_path, class: "ui large button #{"primary" if @cars.count == 0}"
+
+  .ui.segment
+    .ui.header My Team Members
+    .ui.cards
+      - @drivers.each do |driver|
+        .card
+          .content
+            .header = driver.full_name
+            .meta
+              = pluralize(driver.lifetime_lap_count, "lifetime lap")
+              br
+              = mail_to driver.email
+

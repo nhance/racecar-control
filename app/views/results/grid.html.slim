@@ -1,0 +1,47 @@
+.ui.segment
+  = form_tag
+    table.ui.celled.table
+      thead
+        tr
+          th Car Number
+          th Team
+          - if @race.qualifying?
+            th Car Class
+          th Grid Position
+      tbody
+        - @grid.each do |item|
+          tr
+            td= item[:car_number]
+            td= item[:team]
+            - if @race.qualifying?
+              td= item[:car_class]
+            td
+              - if current_user.present?
+                = text_field_tag "results[#{item[:result].id}][position]", item[:grid], class: 'unique-position', id: "result_#{item[:result].id}"
+              - else
+                = item[:grid]
+    - if current_user.present?
+      = submit_tag "Save positions", class: "ui button", id: 'save_positions'
+      = link_to "Download CSV", grid_race_results_path(format: :csv), class: 'ui button'
+
+- if @grid.empty? and current_user.present? and @race.qualifying?
+  .ui.segment.admin
+    = link_to "Create Blank Grid", race_results_path(@race), method: :post, class: "ui button"
+
+- content_for :javascript
+  javascript:
+    $(function() {
+      $('.unique-position').change(function() {
+        $current = $(this);
+
+        if ($current.val() != '') {
+          $('.unique-position').each(function() {
+            if ($(this).val() == $current.val() && $(this).attr('id') != $current.attr('id')) {
+              $current.val('');
+              alert("Positions must be unique");
+              return false;
+            }
+          });
+        }
+      });
+    });

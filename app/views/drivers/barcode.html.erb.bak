@@ -1,0 +1,38 @@
+<% driver = Driver.find params[:id] %>
+<style>
+
+*, body {font-family: 'Roboto', sans-serif; margin: 0; padding: 0;}
+
+#container {width:2.0in;height:0.88in;position:relative;}
+/* border:1px solid #ccc; */
+
+#logo {position:absolute;top:0px;left:0px;height:0.88in;width:1in;}
+#logo img {max-height:0.84in;}
+
+#info {position:absolute;top:0px;left:0.43in;width:1.52in;height:0.88in;}
+
+#info-driver {width:100%;text-align:center;font-size:.12in;position:absolute;top:0.06in;}
+
+#info-barcode {width:100%;text-align:center;height:0.47in;position:absolute;top:0.22in;}
+#info-barcode img {max-height:100%;max-width:100%;}
+
+#info-number {width:100%;text-align:center;font-size:.12in;position:absolute;bottom:0.06in;}
+
+</style>
+
+
+<div id="container">
+
+  <div id="logo"><img src="/assets/logo.png" /></div>
+
+  <div id="info">
+  
+     <div id="info-driver"><%= driver.full_name %></div>
+  
+     <div id="info-barcode"><img src="/assets/barcodes/drivers/<%= driver.barcode %>.png" /></div>
+
+     <div id="info-number"><%= driver.barcode %></div>
+    
+  </div>
+
+</div><!--/container-->

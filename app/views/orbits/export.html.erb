@@ -1,0 +1,8 @@
+<h1>Orbits Export</h1>
+<table border="1">
+<% @event.registrations.each do |registration| %>
+  <tr>
+    <td><%= registration.orbits_export_data.join('</td><td>').html_safe %></td>
+  </tr>
+<% end %>
+</table>

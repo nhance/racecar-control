@@ -1,0 +1,15 @@
+h1.ui.top.attached.block.header
+  .content
+    | #{@registration.car.team}'s #{@registration.car.car_type}
+
+.ui.bottom.attached.segment
+  .ui.warning.message
+    .header Event is sold out!
+    | We're sorry but this event is currently sold out. Please check back and keep an eye on your email for any openings
+    br
+    | If you have already made a payment please look for a refund.
+
+a.ui.labeled.icon.button href="#{car_path(@registration.car)}"
+  = semantic_icon 'left arrow'
+  | Back
+

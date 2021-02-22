@@ -1,0 +1,33 @@
+#scan_stats {
+  .position_change {
+    font-weight: bold;
+
+    &.positive {
+      color: green;
+    }
+
+    &.negative {
+      color: red;
+    }
+   }
+}
+
+.time {
+  border: none;
+  background: none;
+  font-style: italic;
+  color: gray;
+}
+
+#scan_lap_times {
+  .fastest {
+    box-shadow: 0 0 0 #63d3f7 inset;
+    background: #c4e9f5 !important;
+    color: #064357 !important;
+    font-weight: bold;
+  }
+
+  .Yellow {
+    background: yellow !important;
+  }
+}

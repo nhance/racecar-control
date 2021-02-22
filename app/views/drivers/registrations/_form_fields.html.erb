@@ -1,0 +1,69 @@
+<div class="ui segment">
+
+  <div class="field"><%= f.label :email %>
+    <%= f.email_field :email, autofocus: true, data: { validate: 'required' } %></div>
+
+  <% if resource.new_record? %>
+    <div class="field"><%= f.label :password %> <% if @validatable %><i>(<%= @minimum_password_length %> characters minimum)</i><% end %>
+      <%= f.password_field :password, autocomplete: "off", data: { validate: 'required' } %></div>
+
+    <div class="field"><%= f.label :password_confirmation %>
+      <%= f.password_field :password_confirmation, autocomplete: "off", data: { validate: 'required' } %></div>
+  <% else %>
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+      <div class="ui message">Currently waiting confirmation for: <strong><%= resource.unconfirmed_email %></strong></div>
+    <% end %>
+
+    <div class="field">
+      <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
+      <%= f.password_field :password, autocomplete: "off" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :password_confirmation %><br />
+      <%= f.password_field :password_confirmation, autocomplete: "off" %>
+    </div>
+
+    <div class="field">
+      <%= f.label :current_password %> <i>(we need your current password to confirm your password changes)</i><br />
+      <%= f.password_field :current_password, autocomplete: "off" %>
+    </div>
+
+  <% end %>
+
+</div>
+
+<div class="required field"><%= f.label :first_name %>
+  <%= f.text_field :first_name, data: { validate: 'required' } %></div>
+<div class="required field"><%= f.label :last_name %>
+  <%= f.text_field :last_name, data: { validate: 'required' } %></div>
+
+<div class="field"><%= f.label :street_address %>
+  <%= f.text_field :street_address %></div>
+
+<div class="field"><%= f.label :city %>
+  <%= f.text_field :city %></div>
+
+<div class="field"><%= f.label :state %>
+  <%= f.text_field :state, size: 2, max_length: 2 %></div>
+
+<div class="field"><%= f.label :zip_code %>
+  <%= f.text_field :zip_code %></div>
+
+<div class="required field"><%= f.label :cell_phone %>
+  <%= f.text_field :cell_phone, data: { validate: 'required' } %></div>
+
+<div class="field"><%= f.label :allow_sms, 'Check the box to allow us to send you text messages' %>
+  <%= f.check_box :allow_sms %></div>
+
+<div class="required field"><%= f.label :emergency_contact_name %>
+  <%= f.text_field :emergency_contact_name, data: { validate: 'required' } %></div>
+
+<div class="required field"><%= f.label :emergency_contact_phone %>
+  <%= f.text_field :emergency_contact_phone, data: { validate: 'required' } %></div>
+
+<div class="field"><%= f.label :referred_by %>
+  <%= f.text_field :referred_by %></div>
+
+<div class="required field"><%= f.label :shirt_size, 'T-Shirt size' %>
+<%= f.select :shirt_size, ['S', 'M', 'L', 'XL', 'XXL', 'Big Stig (XXL+)'], prompt: 'Select shirt size', data: { validate: 'required' } %></div>

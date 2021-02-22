@@ -1,0 +1,34 @@
+h1.ui.block.header
+  = semantic_icon('large circular invertered calendar')
+  .content
+    = "#{@event.track}"
+    .sub.header
+      | #{@registrations.count} registrations for #{@event.start_date.to_s(:long)}
+
+
+= form_tag event_registrations_path(@event), method: :post do
+  - if current_user.present?
+    = submit_tag "Save", class: "ui primary button"
+  - if current_user.present?
+    .ui.left.floated Car Class:
+  .ui.relaxed.divided.list
+    - @registrations.each do |registration|
+      .item(data-class=registration.car_class)
+        .right.floated.compact.ui
+          = registration.car.car_type
+          - if current_user.present?
+            .verified(style="text-align: right")
+              label
+                | Verified?
+                = check_box_tag "registrations[#{registration.id}][verified]", true, registration.verified?
+        .content
+          - if current_user.present?
+            .ui.left.floated = text_field_tag "registrations[#{registration.id}][car_class]", registration.car_class, size: 2
+          - elsif registration.car_class.present?
+            .ui.left.floated.black.button = registration.car_class
+          .ui.horizontal.statistic
+            .value = "##{registration.car_number}"
+            .label = registration.team
+
+  - if current_user.present?
+    = submit_tag "Save", class: "ui primary button"

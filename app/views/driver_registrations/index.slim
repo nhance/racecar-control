@@ -1,0 +1,58 @@
+- if @driver_registrations.present?
+  h1 Drivers Registrations for #{@event}
+  = paginate @driver_registrations unless params[:unapproved]
+  br
+  br
+  - if params[:unapproved]
+    = link_to "Show All Drivers", event_driver_registrations_path(@event), class: 'ui button'
+  - else
+   = link_to "Show Only Unapproved Drivers (slow)", event_driver_registrations_path(@event, unapproved: true), class: 'ui button', id: 'unapproved_button', onclick: "$('#unapproved_button').addClass('loading');"
+  table.ui.celled.padded.table
+    thead
+      tr
+        th.single.line Driver Name
+        th Team
+        th Phone
+        th Email
+        th Experience
+        th Admin Notes
+        th AER Laps
+        th Signup at
+        th Referred By
+        th Approved at
+    tbody
+      - @driver_registrations.each do |driver_registration|
+        - driver = driver_registration.driver || Driver.new
+        - registration = driver_registration.registration
+
+        tr id="driver_reg_#{driver_registration.id}" class=('approved' if driver.approved?)
+          td
+            h2.ui.header = link_to driver.full_name, "/admin/driver/#{driver.id}/edit#driver_shirt_size", target: '_blank'
+          td
+            .ui.tiny.statistic
+              .value = "##{registration.car_number} "
+              .label = driver.team
+          td
+            = driver.cell_phone
+          td
+            = mail_to driver.email, driver.email
+          td
+            .ui.list
+              - driver.experience.each_pair do |key, value|
+                .item
+                  .header=key
+                  .description=value
+            p = driver.notes
+          td
+            = driver.admin_notes
+          td
+            = driver.lifetime_lap_count
+          td
+            = driver.created_at&.to_s(:default)
+          td
+            = driver.referred_by
+          td
+            - if driver.approved?
+              = driver.approved_at
+            - else
+              h3.ui.red.header NOT APPROVED YET

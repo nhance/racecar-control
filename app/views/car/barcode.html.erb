@@ -1,0 +1,34 @@
+<style>
+
+*, body {font-family: 'Roboto', sans-serif; margin: 0; padding: 0;}
+
+#container {width:2.76in;height:0.94in;position:relative;}
+/* border:1px solid #ccc; */
+
+#logo {position:absolute;top:0px;left:0px;height:0.94in;width:0.2in;}
+#logo img {height:0.94in;width:0.2in}
+
+#info {position:absolute;top:0px;left:0.2in;width:246px;height:0.94in;}
+
+#info-car {width:100%;text-align:center;font-size:.12in;position:absolute;top:0.01in;z-index:1;}
+
+#info-barcode {width:100%;text-align:center;height:0.7in;position:absolute;top:0.12in;}
+#info-barcode img {height:100%;width:100%;}
+
+#info-number {width:100%;text-align:center;font-size:.12in;position:absolute;bottom:0.08in;}
+
+</style>
+
+
+<div id="container">
+
+  <div id="logo"><img src="/logo.png" /></div>
+
+  <div id="info">
+    <div id="info-car"><%= @car.car_type %> (<%= @car.team %>)</div>
+     <div id="info-barcode"><img src="/barcodes/cars/<%= @car.barcode %>.png" /></div>
+
+     <div id="info-number"><%= @car.barcode %><div>
+  </div>
+
+</div><!--/container-->

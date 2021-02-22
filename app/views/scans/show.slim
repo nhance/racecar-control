@@ -1,0 +1,138 @@
+h2.ui.right.aligned.header
+  .content
+    = @scan.event
+    .sub.header = @scan.created_at.strftime("%A %B %e, %Y")
+
+h1.ui.block.header
+  = semantic_icon('pointing right')
+  .content
+    = @scan.driver.try(:full_name)
+    .sub.header
+      = "#{@scan.team} ##{@scan.car_number}"
+      - if @scan.can_change_driver?(current_driver) or current_user.present?
+        .ui.segment
+          = form_for @scan, html: { class: 'ui form' } do |f|
+            .field
+              = f.select :driver_id, ([Driver.unknown] + @scan.team.drivers + @scan.registration.drivers).uniq.collect { |d| [d.full_name, d.id] }, { include_blank: "Change Driver" }, { class: 'ui dropdown' }
+            - if current_user.present?
+              .field
+                .ui.checkbox
+                  = f.check_box :short_stop
+                  = f.label :short_stop
+
+            = f.submit "Assign Driver", class: 'ui button'
+
+- if @scan.has_pit_time?
+  h3.ui.block.header
+    .content = "Elapsed Pit time: #{human_time(@scan.pit_time)}"
+    .sub.header
+      - if current_user.present?
+        = link_to "Pit in at #{@scan.in_scan.formatted_time(summary: false)}. ", scan_path(@scan.in_scan)
+      - else
+        = "Pit in at #{@scan.in_scan.formatted_time(summary: false)}. "
+      = "Pit out at #{@scan.formatted_time(summary: false)}"
+
+- if current_user.present?
+  .ui.raised.red.segment
+    - if @scan.violations.count > 0
+      h3.ui.header = "#{pluralize @scan.violations.count, "Violation"} logged"
+      table.ui.striped.table
+        - @scan.violations.each do |violation|
+          tr
+            td
+              h4.ui.header
+                - if violation.team_id.present? && violation.team_id > 0
+                  | [TEAM] 
+                =violation.comment
+
+    = form_for Violation.new(scan: @scan), html: { class: 'ui form' }, url: violation_scan_path(@scan) do |f|
+      .field
+        = f.label :comment, "Add Violation"
+        = f.text_field :comment
+      .field
+        = f.label :team_id, "Assign violation to team"
+        = f.check_box :team_id, {}, @scan.team.id
+      = f.submit "Add"
+
+
+- if @scan.total_laps > 0
+  table#scan_stats.ui.collapsing.definition.table
+    tbody
+      tr
+        td Fastest Lap
+        td = human_time(@scan.fastest_lap_time)
+      tr
+        td Average lap (Green)
+        td = human_time(@scan.average_lap_time)
+      tr
+        td Longest lap (Green)
+        td = human_time(@scan.longest_lap)
+
+      tr
+        td Total laps
+        td = @scan.total_laps
+      tr
+        td Time in car
+        td = human_time(@scan.stint_length)
+
+      tr
+        td Position Change
+        td(class="position_change #{@scan.position_change >= 0 ? "positive" : "negative"}")
+          = "%+d" % @scan.position_change
+
+      tr.variance
+        td Variance
+        td = "#{@scan.variance}s"
+
+      tr.std_dev
+        td Standard Deviation
+        td = "#{@scan.std_dev}s"
+
+- if Event.current.nil? and not @scan.processed?
+  = link_to "Analyze data", analyze_scan_path(@scan), method: :post, class: 'ui primary button'
+
+- if current_user.present?
+  = link_to "Send Pit #{@scan.pit} notification", mock_pit_scan_path(@scan), method: :post, class: 'ui red button'
+
+
+= link_to @return_path, class: "ui icon labeled button" do
+  i.left.arrow.icon
+  | Back
+
+- if @scan.lap_times.count > 0
+  table#scan_lap_times.ui.stacked.striped.selectable.table
+    thead
+      tr
+        th Lap Number
+        th Position
+        th Lap Time
+        th Recorded at
+
+    tbody
+      -@scan.lap_times.each do |lap_time|
+        tr(class=css_class_for(lap_time))
+          td = lap_time.lap_number
+          td = lap_time.position
+          td = human_time(lap_time.lap_time)
+          td = lap_time.created_at.in_time_zone(@scan.event.time_zone).strftime("%F %k:%M:%S")
+- else
+  h3.ui.header No lap data
+
+.fb-share-button(data-href="#{scan_url(@scan)}" data-layout="button_count")
+
+- if user_signed_in?
+  = link_to "Analyze data", analyze_scan_path(@scan), method: :post, class: 'ui primary button'
+
+dl.time
+  dt Scan time:
+  dd = @scan.created_at.in_time_zone(@scan.event.time_zone)
+dl.time
+  dt Processed at:
+  dd = @scan.processed_at.in_time_zone(@scan.event.time_zone)
+
+#sponsored_page.ui.center.aligned.segment
+  .announce
+    span.what Stint Analysis
+    |  is sponsored by
+  a(href="http://www.proformancecoaching.com/" target="_blank")
+    img(src="/sponsors/proformance_coaching.jpg" height="75px" title="Sponsored by ProFormance Coaching")

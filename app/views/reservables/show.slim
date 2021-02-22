@@ -1,0 +1,41 @@
+h1.ui.block.header
+  = semantic_icon('large circular invertered calendar')
+  .content
+    = "Reservations for #{@reservable_item.name} at #{@event}"
+
+.ui.segment
+  - if @reservable_item.image.present?
+    = image_tag @reservable_item.image.url
+
+  - if @reservable_item.description.present?
+    p=@reservable_item.description
+
+  h3.ui.header Current Reservations:
+  .ui.relaxed.divided.list
+    -@reservations.each_pair do |spot_number, registrations|
+      .item
+        - if @registration.present?
+          .right.floated.compact.ui
+            - if !@registration.reserved?(@reservable_item)
+              = link_to registration_reservable_reservation_path(@registration, @reservable_item, item_number: spot_number), method: :post, class: "ui button" do
+                | Reserve ##{spot_number}
+                - if @reservable_item.item_price_in_cents > 0
+                  = " (#{number_to_currency(@reservable_item.item_price_in_cents / 100)})"
+
+            - elsif @registration.reservation_number(@reservable_item) == spot_number
+              = link_to "Remove Reservation", registration_reservable_reservation_path(@registration, @reservable_item), method: :delete, class: 'ui red button'
+        .content
+          .header
+            = "##{spot_number}"
+          .meta
+            - if registrations.count == 0
+              .em Not yet reserved
+            - else
+              ul.ui.list
+                - registrations.each do |registration|
+                  li= "##{registration.car_number} #{registration.team}"
+
+- if @registration.present?
+  a.ui.labeled.icon.button href="#{registration_path(@registration)}"
+    = semantic_icon 'left arrow'
+    | Back

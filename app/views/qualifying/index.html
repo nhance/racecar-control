@@ -1,0 +1,20 @@
+<h1>Qualifying</h1>
+<table>
+<% teams = LapTimeHelper.teams_by_qualifying_time %>
+<% overall_fastest_time = LapTimeHelper.qualifying_ftd %>
+<% teams.each_with_index do |team, index| %>
+  <tr>
+    <% fastest_time = team.fastest_qualifying_time %>
+    <% overall_delta = (index != 0) ? overall_fastest_time - fastest_time : 0.000 %>
+    <% delta = (index != 0) ? teams[index - 1].fastest_qualifying_time - fastest_time : 0.000 %>
+    <td><%= [ team.team_name, 
+              team.car_number, 
+              fastest_time, 
+              team.fastest_qualifying_speed,
+              delta,
+              overall_delta
+            ].join('</td><td>').html_safe %></td>
+
+  </tr>
+<% end %>
+</table>

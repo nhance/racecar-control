@@ -1,0 +1,7 @@
+h1 No current race!
+p There is currently no race running. Check back for live results during our next race :)
+- if user_signed_in?
+  hr
+  - if Event.current and Event.current.promo_content.present?
+    #promo_content
+      = markdown Event.current.promo_content

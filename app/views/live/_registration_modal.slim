@@ -1,0 +1,19 @@
+.ui.modal id="registration_modal_#{registration.id}"
+  i.close.icon
+  .header
+    | Car ##{registration.car.number}
+  .content
+    h5.ui.header Violations
+    - if registration.violations.count > 0
+      ul.ui.bulleted.list
+        - registration.violations.each do |violation|
+          li
+            .header
+              - if violation.team_id.present? && violation.team_id > 0
+                | [TEAM] 
+              - else
+                = "#{violation.scan.driver_name}: "
+              = violation.comment
+            =violation.created_at
+    - else
+      | No violations

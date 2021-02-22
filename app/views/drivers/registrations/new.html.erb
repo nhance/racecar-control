@@ -1,0 +1,102 @@
+
+<%= form_for(resource, as: resource_name, url: driver_registration_path, html: { class: 'ui large form'}) do |f| %>
+  <h2 class="ui dividing header">Sign up</h2>
+  <%= devise_error_messages! %>
+
+  <%= render "form_fields", f: f %>
+
+  <div class="grouped fields">
+    <label>Experience:</label>
+
+    <div class="field">
+      <div class="ui checkbox">
+        <%= check_box_tag "driver[details][experience][NASA]", '1', f.object.experience['NASA'] == '1' %>
+        <%= label_tag "driver[details][experience][NASA]", "NASA" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="ui checkbox">
+        <%= check_box_tag "driver[details][experience][SCCA]", '1', f.object.experience['SCCA'] == '1' %>
+        <%= label_tag "driver[details][experience][SCCA]", "SCCA" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="ui checkbox">
+        <%= check_box_tag "driver[details][experience][BMW CCA]", '1', f.object.experience['BMW CCA'] == '1' %>
+        <%= label_tag "driver[details][experience][BMW CCA]", "BMW CCA" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="ui checkbox">
+        <%= check_box_tag "driver[details][experience][PCA]", '1', f.object.experience['PCA'] == '1' %>
+        <%= label_tag "driver[details][experience][PCA]", "PCA" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="ui checkbox">
+        <%= check_box_tag "driver[details][experience][PBOC]", '1', f.object.experience['PBOC'] == '1' %>
+        <%= label_tag "driver[details][experience][PBOC]", "PBOC" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="ui checkbox">
+        <%= check_box_tag "driver[details][experience][IMSA]", '1', f.object.experience['IMSA'] == '1' %>
+        <%= label_tag "driver[details][experience][IMSA]", "IMSA" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="ui checkbox">
+        <%= check_box_tag "driver[details][experience][F1]", '1', f.object.experience['F1'] == '1' %>
+        <%= label_tag "driver[details][experience][F1]", "F1" %>
+      </div>
+    </div>
+
+    <div class="inline fields">
+      <div class="field">
+        <div class="ui checkbox">
+          <%= check_box_tag "driver[details][experience][24hrlemons]", '1', f.object.experience['24hrlemons'] == '1' %>
+          <%= label_tag "driver[details][experience][24hrlemons]", "24 Hours of Lemons" %>
+        </div>
+      </div>
+      <div class="field">
+        <%= text_field_tag "driver[details][experience][24hrlemonsraces]", f.object.experience['24hrlemonsraces'], size: 8, placeholder: "# races" %>
+      </div>
+    </div>
+
+    <div class="inline fields">
+      <div class="field">
+        <div class="ui checkbox">
+          <%= check_box_tag "driver[details][experience][chump]", '1', f.object.experience['chump'] == '1' %>
+          <%= label_tag "driver[details][experience][chump]", "Chump Car" %>
+        </div>
+      </div>
+      <div class="field">
+        <%= text_field_tag "driver[details][experience][chumpraces]", f.object.experience['chumpraces'], size: 8, placeholder: "# races" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="ui checkbox">
+        <%= check_box_tag "driver[details][experience][other]", '1', f.object.experience['other'] == '1' %>
+        <%= label_tag "driver[details][experience][other]", "Other" %>
+      </div>
+    </div>
+
+    <div class="field">
+      <%= label_tag "driver[notes]", "Please describe your race experience:(required)" %>
+      <%= text_area_tag "driver[notes]" %>
+    </div>
+  </div>
+
+  <div class="field"><%= f.submit "Sign up", class: "ui submit button primary" %></div>
+<% end %>
+
+<div class="ui divider"></div>
+
+<%= render "drivers/shared/links" %>

@@ -1,0 +1,36 @@
+h1.ui.top.attached.block.header
+  .content
+    | ##{@registration.car.number} #{@registration.car.car_type}
+    .sub.header Drivers racing at #{@event}
+
+.ui.bottom.attached.segment
+  h2.ui.header Registered Drivers List
+
+  - if @driver_registrations.count < 1
+    p.ui.centered No drivers have been registered yet. A minimum of #{Registration::MINIMUM_DRIVER_REGISTRATIONS} drivers are required. Use the field below to add a driver
+  - else
+    .ui.cards
+      - @driver_registrations.each do |driver_registration|
+        .card
+          .content
+            =link_to registration_driver_path(@registration, driver_registration), method: :delete do
+              i.right.floated.close.icon
+            .header #{driver_registration.driver.full_name }
+            .meta Driver
+            .description
+              = pluralize(driver_registration.driver.lifetime_lap_count, "lifetime lap")
+
+  = form_tag registration_drivers_path(@registration), html_options: { class: "ui form" } do |f|
+    = select_tag :driver_id, options_for_select(@registration.team.drivers.collect { |d| [d.full_name, d.id] }), include_blank: "Add Driver", class: "ui selection dropdown"
+    = submit_tag "Add", class: "ui button"
+
+  - unless @im_driving
+    = form_tag registration_drivers_path(@registration)
+      = hidden_field_tag :driver_id, current_driver.id
+      = submit_tag "Click here to add yourself as a driver", class: 'ui primary button right floated huge'
+
+
+
+a.ui.labeled.icon.button href="#{car_path(@registration.car)}"
+  = semantic_icon 'left arrow'
+  | Back

@@ -1,0 +1,168 @@
+h1.ui.top.attached.block.header
+  .content
+    | #{@registration.car.team}'s #{@registration.car.car_type}
+    .sub.header Registered to race #{@registration.event}
+
+.ui.bottom.attached.segment
+  - case @registration.state.to_sym
+  - when :interested
+    .ui.error.message
+      .header Minimum Payment Required
+      | A minimum payment of #{number_to_currency((Registration::MINIMUM_PAYMENT_IN_CENTS - @registration.amount_paid) / 100.00)} is required to register for this event.
+  - when :pending
+    .ui.warning.message
+      .header Registration is pending
+      | Your registration is in the pending status but you aren't guaranteed a spot and won't be able to reserve anything yet.
+      |  The requirements to complete registration are:
+      ul.ui.bulleted.list
+      - Registration::COMPLETION_REQUIREMENTS.each do |requirement|
+        li.ui.item = requirement
+  - when :ready
+    .ui.success.message
+      .header Ready to Race!
+      | Your registration is complete!
+
+  - if @registration.payment_due?
+    .ui.segments
+      .ui.segment
+        h2.ui.dividing.header.red
+          = semantic_icon 'money'
+          .content
+            = number_to_currency @registration.amount_due_dollars
+            .sub.header Amount due
+
+        script src="https://checkout.stripe.com/checkout.js"
+
+        = form_tag registration_payments_path(@registration), id: 'payment_form' do
+          = hidden_field_tag :stripeToken
+          = hidden_field_tag :amount_in_cents
+          = hidden_field_tag :invite_code_code
+        .ui.left.icon.input.huge.fluid
+          = semantic_icon 'dollar'
+          = text_field_tag :amount, nil, placeholder: "Enter amount up to #{number_to_currency @registration.amount_due_dollars}"
+        .ui.right.aligned.basic.segment
+          button#pay_now.ui.huge.green.button Make a payment
+
+
+        javascript:
+          var amount = function() { return parseFloat($('#amount').val().replace(/[^\d.]/g, "")); };
+
+          var handler = StripeCheckout.configure({
+            key: '#{Rails.configuration.stripe[:publishable_key]}',
+            token: function(token) {
+              $('#stripeToken').val(token.id);
+              $('#amount_in_cents').val(amount() * 100);
+              $('#payment_form').addClass('loading').submit();
+            }
+          });
+
+          $('#pay_now').on('click', function(e) {
+            if (isNaN(amount())) {
+              $('#amount').val('#{@registration.amount_due_dollars}');
+            }
+            if (amount() > 0.0) {
+              handler.open({
+                email: '#{current_driver.email}',
+                name: 'AER Registration',
+                description: '#{@registration.event}',
+                amount: amount() * 100
+              });
+            }
+            e.preventDefault();
+          });
+
+          // Close Checkout on page navigation
+          $(window).on('popstate', function() {
+            handler.close();
+          });
+      .ui.secondary.segment
+        a data-modal="invite_code"
+          | Click here if you have an invite code
+      .ui.modal id="invite_code"
+          = semantic_icon 'close'
+          .content
+            .image
+              = semantic_icon 'blue ticket'
+            .description
+              = form_for @registration, html: { class: 'ui form' } do |f|
+                - if @registration.invite_code.present?
+                  .field
+                    | Your invite code is '<strong>#{@registration.invite_code_code}</strong>' and will remove <strong>#{number_to_currency @registration.invite_code.discount_amount_in_cents / 100 }</strong> from your registration
+                .field
+                  label Enter your invite code (leave blank to remove)
+                  = f.text_field :invite_code_code
+                .field
+                  = submit_tag "Use invite code".html_safe, class: 'ui green button'
+
+  - if @registration.attending_race?
+    .ui.segment
+      h3.ui.header Registration Details
+      ul.ui.items
+        li.item
+          strong Event Admission
+          |  (#{number_to_currency(@registration.price_in_cents / 100)})
+        - if @registration.invite_code.present?
+          li.item
+            strong Invite code "#{@registration.invite_code_code}"
+            |  (-#{number_to_currency(@registration.invite_code.discount_amount_in_cents / 100)})
+        - if @registration.item_reservations.count > 0
+          - @registration.item_reservations.each do |item_reservation|
+            li.item
+              strong #{item_reservation.name} reserved ##{item_reservation.item_number}
+              - if item_reservation.item_price_in_cents > 0
+                |  (#{number_to_currency(item_reservation.item_price_in_cents / 100)})
+
+      = form_for @registration, html: { class: 'ui form' } do |f|
+        .field
+          .ui.checkbox
+            = f.check_box :transponder_rental, disabled: @registration.must_rent_transponder?
+            = f.label :transponder_rental do
+              | Check this box if you need to rent a transponder ($#{Registration::TRANSPONDER_RENTAL_PRICE / 100})
+              - if @registration.must_rent_transponder?
+                | [<a href='#{edit_car_path(@registration.car)}'>Edit car</a> and add transponder to uncheck]
+
+        - if @registration.event.allows_supplemental_charge?
+          .field
+            .ui.checkbox
+              = f.check_box :accepts_supplemental_charge
+              = f.label :accepts_supplemental_charge, @registration.event.supplemental_charge
+        h4.ui.header Total Price: #{number_to_currency(@registration.total_price / 100)}
+        h4.ui.header Amount Paid: #{number_to_currency(@registration.amount_paid / 100)}
+        .ui.right.aligned.basic.segment
+          = f.submit "Update registration", class: 'ui submit primary button'
+
+    .ui.divider.hidden
+    .ui.segment
+      a.ui.button.massive.teal href="#{registration_drivers_path(@registration)}"
+        | Add/Remove Drivers
+
+      - if @registration.reservables.visible.count > 0
+        - if @registration.admission_paid?
+          a.ui.button.massive.purple href="#{registration_reservables_path(@registration)}"
+            | Reserve Garages, Pit Spots, Etc.
+        - else
+          a.ui.button.massive.disabled pay in full to reserve shit
+    .ui.divider.hidden
+
+  #payments.ui.segment
+    .ui.header Payment History
+
+    - if @payments.count == 0
+      .ui.centered There have been no payments made.
+    - else
+      ul.ui.list
+        - @payments.each do |payment|
+          .item
+            .header #{number_to_currency payment.amount}
+            .content
+              | Made by #{payment.driver.full_name} at #{payment.created_at}
+
+- if @payments.count == 0
+  = link_to registration_path(@registration), method: :delete, class: 'ui labeled right floated icon button red' do
+    = semantic_icon 'close'
+    | Unregister
+
+a.ui.labeled.icon.button href="#{car_path(@registration.car)}"
+  = semantic_icon 'left arrow'
+  | Back
+

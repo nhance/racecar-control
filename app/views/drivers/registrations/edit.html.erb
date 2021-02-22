@@ -1,0 +1,14 @@
+
+<%= form_for(resource, as: resource_name, url: driver_registration_path, html: { method: :put, class: 'ui large form' }) do |f| %>
+  <h2 class="ui dividing header">Edit <%= resource_name.to_s.humanize %></h2>
+  <%= devise_error_messages! %>
+
+  <%= render "form_fields", f: f %>
+
+  <div class="field"><%= f.submit "Save changes", class: 'ui submit button primary' %></div>
+<% end %>
+
+
+<div class="ui divider"></div>
+
+<%= link_to "Back", :back %>

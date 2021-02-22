@@ -1,0 +1,40 @@
+.ui.block.header
+  = semantic_icon('big add user')
+  .content
+    | Choose your team
+    .sub.header Before you can get started, you'll need to join a team
+
+.ui.basic.center.aligned.segment
+  =link_to "#{semantic_icon('add circle')} Create new team".html_safe, new_team_path, class: 'ui primary large icon labeled button'
+.ui.divider
+
+.ui.three.column.grid
+  - @teams.each do |team|
+    .column
+      .ui.fluid.card
+        .content
+          h2.ui.icon.header data-modal="join_team_#{team.id}"
+            = semantic_icon('large users')
+            .content
+              = team.name
+              .sub.header = pluralize team.drivers.count, "member"
+
+          .ui.modal id="join_team_#{team.id}"
+              = semantic_icon 'close'
+              .header Enter passcode to join #{team}
+              .content
+                .image
+                  = semantic_icon 'add circle'
+                .description
+                  = form_tag select_team_path(team), class: 'ui form' do
+                    .field
+                      = text_field_tag :passcode, nil, placeholder: "Passcode"
+                    .field
+                      = submit_tag "Join".html_safe, class: 'ui green button'
+                  #passcode_info.ui.info.message
+                    .header What is a passcode?
+                    | A passcode is required to join a team. You can ask any other team member for this or email us if you forget it.
+                    | Tell your team captain to login, click "my team" at the top and look for the blue box.
+        .ui.attached.bottom.button data-modal="join_team_#{team.id}"
+          = semantic_icon 'plus'
+          | Join Team

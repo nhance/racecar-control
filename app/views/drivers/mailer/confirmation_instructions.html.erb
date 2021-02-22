@@ -1,0 +1,5 @@
+<p>Welcome to AER, <%= @resource.first_name %>!</p>
+
+<p>We are really excited to have you race with us. In order to connect, we'll need you to take one last step and click the link below to confirm your account</p>
+
+<p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
